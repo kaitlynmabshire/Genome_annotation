@@ -1,0 +1,57 @@
+### Softwares:
+
+# HISAT2
+https://daehwankimlab.github.io/hisat2/manual/
+
+# SRA-Toolkit
+https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit
+
+# BRAKER3
+https://pubmed.ncbi.nlm.nih.gov/37398387/
+
+# Prior data:
+
+1) Genome
+2) Transcriptomes
+
+### SRA-Toolkit
+
+# Download SRA-Toolkit from https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit
+
+## Install SRA-Tookit
+
+cd path/to/SRA-Toolkit
+./vdb-config -i
+
+1) Enable the "Remote Access" option on the Main screen.
+2) Proceed to the "Cache" tab. Enable "local file-caching" and set the "Location of user-repository". The repository directory needs to be set to an empty folder. This is the folder where prefetch will deposit the files.
+3) Go to your cloud provider tab and accept to "report cloud instance identity".
+
+./fastq-dump --stdout -X 2 SRR390728
+curl --output sratoolkit.tar.gz https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-mac64.tar.gz
+tar -vxzf sratoolkit.tar.gz
+export PATH=$PWD/sratoolkit.3.0.0-mac64/bin:$PATH
+
+## Export SRA transcriptome files
+
+./prefetch -v <accession number>
+
+If files are downloading, "Downloading via HTTPS..." will appear. SRA files should download into ~/cache/sra folder
+
+## Convert SRA files to Fastq
+
+./fastq-dump 
+
+### HISAT2
+
+# Download HISAT2 from https://daehwankimlab.github.io/hisat2/download/
+
+## Install HISAT2
+
+cd path/to/HISAT2
+conda install -c bioconda hisat2
+
+## Create genome index
+
+hisat2-build -p 6 -f species_genome.fasta species_genome_index
+

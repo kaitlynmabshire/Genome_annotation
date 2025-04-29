@@ -38,9 +38,11 @@ export PATH=$PWD/sratoolkit.3.0.0-mac64/bin:$PATH
 
 If files are downloading, "Downloading via HTTPS..." will appear. SRA files should download into ~/cache/sra folder
 
-## Convert SRA files to Fastq
+## Convert SRA files to Fastq (paired)
 
-./fastq-dump 
+./fasterq-dump <sra_file.sra> --split-files
+
+Accession_1.fastq and Accession_2.fastq should be outputted. 
 
 ### HISAT2
 
@@ -51,7 +53,28 @@ If files are downloading, "Downloading via HTTPS..." will appear. SRA files shou
 cd path/to/HISAT2
 conda install -c bioconda hisat2
 
+## Rename transcriptome pairs
+
+read1_1=/path/to/accession_1.fastq
+read1_2=/path/to/accession_2.fastq
+read2_1=/path/to/accession_1.fastq
+read2_2=/path/to/accession_2.fastq
+read3_1=/path/to/accession_1.fastq
+read3_2=/path/to/accession_2.fastq
+read4_1=/path/to/accession_1.fastq
+read4_2=/path/to/accession_2.fastq
+read5_1=/path/to/accession_1.fastq
+read5_2=/path/to/accession_2.fastq
+read6_1=/path/to/accession_1.fastq
+read6_2=/path/to/accession_2.fastq
+
 ## Create genome index
 
-hisat2-build -p 6 -f species_genome.fasta species_genome_index
+hisat2-build -p 16 -f species_genome.fasta species_genome_index
 
+## Align transcriptome reads to the reference genome
+
+hisat2 -p 16 -x species_genome_index -1 $read1_1,$read2_1,$read3_1,$read4_1,$read5_1,$read6_1 -2 $read1_2,$read2_2,$read3_2,$read4_2,$read5_2,$read6_2 -S mapped_reads.sam
+
+## Convert to bam and sort
+samtools view --threads 16 -b mapped_reads.sam | samtools sort -o mapped_reads.bam --threads 20
